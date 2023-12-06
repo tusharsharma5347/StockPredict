@@ -9,12 +9,10 @@ from tensorflow.keras.layers import Dense, LSTM
 
 # Function to get user's choice of stock
 def select_stock():
-    stocks = [
-        "ADANIPORTS", "TCS", "ASIANPAINT", "AXISBANK", "BAJAJ-AUTO", "BAJAJFINSV", "BAJFINANCE", "BHARTIARTL", "BPCL",
-        "BRITANNIA", "CIPLA", "COALINDIA", "DRREDDY", "EICHERMOT", "GAIL", "GRASIM", "HCLTECH", "HDFC", "HDFCBANK",
-        "HEROMOTOCO", "HINDALCO", "HINDUNILVR", "ICICIBANK", "INDUSINDBK", "INFRATEL", "INFY", "IOC", "ITC", "JSWSTEEL",
-        "KOTAKBANK", "LT"
-    ]
+    stocks = ["ADANIPORTS", "TCS", "ASIANPAINT", "AXISBANK", "BAJAJ-AUTO", "BAJAJFINSV", "BAJFINANCE", "BHARTIARTL",
+              "BPCL", "BRITANNIA", "CIPLA", "COALINDIA", "DRREDDY", "EICHERMOT", "GAIL", "GRASIM", "HCLTECH", "HDFC",
+              "HDFCBANK", "HEROMOTOCO", "HINDALCO", "HINDUNILVR", "ICICIBANK", "INDUSINDBK", "INFRATEL", "INFY", "IOC",
+              "ITC", "JSWSTEEL", "KOTAKBANK", "LT"]
 
     st.sidebar.title("Stock Prediction App")
     selected_stock = st.sidebar.selectbox("Select a stock", stocks)
@@ -68,7 +66,7 @@ def build_train_model(train_data, epochs=10, batch_size=32, selected_stock=""):
 
     return model, scaler
 
-# Inside the 'make_predictions_with_dates' function
+# Function to make predictions with dates
 def make_predictions_with_dates(model, scaler, test_data):
     test_data_len = len(test_data)
 
@@ -96,8 +94,7 @@ def make_predictions_with_dates(model, scaler, test_data):
 
     return prediction_dates, display_with_predictions
 
-
-# Function to display results with Buy/Sell signals
+# Function to display results with signals
 def display_results_with_signals(train, display, predictions):
     st.title("Stock Prediction Results")
 
@@ -147,6 +144,7 @@ def display_results_with_signals(train, display, predictions):
             st.markdown(f"**{sell_signal.strftime('%Y-%m-%d')}**", unsafe_allow_html=True)
             st.markdown('<font color="red">▼ Sell</font>', unsafe_allow_html=True)
 
+
 # Main Streamlit app with buy/sell functionality
 def main():
     st.set_page_config(page_title="Stock Prediction App", layout="wide")
@@ -166,44 +164,58 @@ def main():
     prediction_dates, predictions = make_predictions_with_dates(model, scaler, test_data)
 
     train = df[:len(train_data)]
-    display = df[len(train_data) - 60:]
+    display = pd.DataFrame(index=prediction_dates)
+    display['Predictions'] = np.nan
+    display['Predictions'].iloc[-len(predictions):] = predictions['Predictions'].values
 
     # Display the results with buy/sell signals
-    display_results_with_signals(train, display, predictions)
+    # Function to display results with signals
+def display_results_with_signals(train, display, predictions):
+    st.title("Stock Prediction Results with Buy/Sell Signals")
+
+    # Line chart for training data
+    st.line_chart(train['Close'], use_container_width=True)
+    st.text("Training Data: Actual Stock Prices")
+
+    # Line chart for test data and predictions
+    display_with_signals = display.copy()
+    display_with_signals['Buy_Signal'] = predictions['Buy_Signal'].values
+    display_with_signals['Sell_Signal'] = predictions['Sell_Signal'].values
+
+    st.line_chart(display_with_signals[['Close', 'Buy_Signal', 'Sell_Signal']], use_container_width=True)
+    st.text("Test Data: Actual Stock Prices with Buy/Sell Signals")
+
+    # Display the predicted prices along with dates
+    st.title("Predicted Stock Prices with Buy/Sell Signals")
+
+    # Display the predicted prices along with dates
+    st.line_chart(display_with_signals[['Predictions', 'Buy_Signal', 'Sell_Signal']], use_container_width=True)
+    st.text("Predicted Stock Prices with Buy/Sell Signals")
 
     # Display the predicted price for a specific date
     st.header("Predicted Price for a Specific Date")
 
     # Use the minimum date as the default date
-    default_date = prediction_dates.min().to_pydatetime().date()
+    default_date = predictions.index.min().to_pydatetime().date()
 
-    selected_date = st.date_input("Select a date", min_value=prediction_dates.min(), max_value=prediction_dates.max(),
-                                  value=default_date)
+    selected_date = st.date_input("Select a date", min_value=predictions.index.min(), max_value=predictions.index.max(), value=default_date)
 
     selected_date_str = selected_date.strftime("%Y-%m-%d")
 
     try:
-        # Use display_with_predictions DataFrame for retrieving predicted price
-        predicted_price = predictions.loc[selected_date_str, 'Predictions']
+        predicted_price = display.loc[selected_date_str, 'Predictions']
         buy_signal = predictions.loc[selected_date_str, 'Buy_Signal']
         sell_signal = predictions.loc[selected_date_str, 'Sell_Signal']
 
-        # Determine signal text and color
-        if buy_signal:
-            signal_text = "Buy"
-            signal_color = "green"
-        elif sell_signal:
-            signal_text = "Sell"
-            signal_color = "red"
-        else:
-            signal_text = "No Signal"
-            signal_color = "yellow"
-
+        # Display the predicted price with buy/sell signal
         st.write(f"The predicted stock price for {selected_date_str} is: {predicted_price:.2f}")
 
-        # Display the signal with appropriate color for the specified date
-        signal_display = f"Signal: <font color='{signal_color}'><b>{signal_text}</b></font>"
-        st.markdown(signal_display, unsafe_allow_html=True)
+        if buy_signal == 1:
+            st.success("Buy Signal!")
+        elif sell_signal == 1:
+            st.error("Sell Signal!")
+        else:
+            st.warning("No signal for the selected date.")
 
     except KeyError:
         st.warning("No prediction available for the selected date. Please choose another date.")
