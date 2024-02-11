@@ -6,7 +6,6 @@ The application provides insights into stock price trends, buy/sell signals, and
 ## Table of Contents
 - [Getting Started](#getting-started)
 - [Features](#features)
-- [Usage](#usage)
 - [Dependencies](#dependencies)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
@@ -19,27 +18,22 @@ To get started with StockPredict, follow these steps:
 2. Install dependencies
 3. Run the application:
 
-Features:
+## Features:
 Select from a list of popular stocks to analyze.
 Train an LSTM model on historical stock data.
 View predicted stock prices, buy/sell signals, and trends.
 Explore extended predictions for future stock prices.
 Check predictions for a specific date.
 
-Usage:
-Select a stock from the sidebar.
-Adjust the number of epochs and batch size using the sliders.
-Explore historical and predicted stock prices with buy/sell signals.
-Check the predicted price for a specific date.
 
-Dependencies:
+## Dependencies:
 The project relies on the following Python libraries:
-streamlit
-pandas
-numpy
-scikit-learn
-tensorflow
+- streamlit
+- pandas
+- numpy
+- scikit-learn
+- tensorflow
 
-Acknowledgements:
-The LSTM model is built using TensorFlow.
-Streamlit is used for creating the interactive web interface.
+## Acknowledgements:
+- The LSTM model is built using TensorFlow.
+- Streamlit is used for creating the interactive web interface.
