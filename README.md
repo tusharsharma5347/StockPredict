@@ -13,9 +13,9 @@ The application provides insights into stock price trends, buy/sell signals, and
 ## Getting Started
 To get started with StockPredict, follow these steps:
 
-1. Clone the repository:
+1. Clone the repository
 2. Install dependencies
-3. Run the application:
+3. Run the application
 
 ## Features:
 - Select from a list of popular stocks to analyze.
