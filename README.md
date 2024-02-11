@@ -7,11 +7,10 @@ The application provides insights into stock price trends, buy/sell signals, and
 - [Getting Started](#getting-started)
 - [Features](#features)
 - [Dependencies](#dependencies)
-- [License](#license)
 - [Acknowledgements](#acknowledgements)
 
 
-
+## Getting Started
 To get started with StockPredict, follow these steps:
 
 1. Clone the repository:
