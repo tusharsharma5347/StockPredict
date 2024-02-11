@@ -19,11 +19,11 @@ To get started with StockPredict, follow these steps:
 3. Run the application:
 
 ## Features:
-Select from a list of popular stocks to analyze.
-Train an LSTM model on historical stock data.
-View predicted stock prices, buy/sell signals, and trends.
-Explore extended predictions for future stock prices.
-Check predictions for a specific date.
+- Select from a list of popular stocks to analyze.
+- Train an LSTM model on historical stock data.
+- View predicted stock prices, buy/sell signals, and trends.
+- Explore extended predictions for future stock prices.
+- Check predictions for a specific date.
 
 
 ## Dependencies:
